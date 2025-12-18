@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experimento de Igualación a la Muestra</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; background-color: #f0f2f5; padding: 20px; color: #1a1a1a; }
+        #experiment-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 800px; margin: auto; min-height: 500px; display: flex; flex-direction: column; }
+        h1 { color: #2c3e50; font-size: 24px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .form-group { margin: 20px 0; text-align: left; max-width: 300px; margin-left: auto; margin-right: auto; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; }
+        select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        .consent-box { text-align: left; line-height: 1.5; font-size: 14px; background: #fdfdfd; padding: 25px; border: 1px solid #ddd; border-radius: 8px; overflow-y: auto; max-height: 400px; margin-bottom: 20px; }
+        .info-label { font-weight: bold; color: #2c3e50; display: block; margin-top: 10px; text-decoration: underline; }
+        .stimulus-sample { font-size: 70px; font-weight: bold; margin: 30px auto; padding: 25px; border: 4px solid #007bff; width: 140px; cursor: pointer; border-radius: 15px; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .options-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 25px; }
+        .option-btn { padding: 20px 40px; font-size: 32px; cursor: pointer; border: 2px solid #2c3e50; border-radius: 10px; background: #fff; font-weight: bold; }
+        #feedback { font-size: 26px; font-weight: bold; margin-top: 35px; height: 40px; }
+        .main-btn { padding: 15px 40px; font-size: 18px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 6px; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="experiment-container">
+    
+    <div id="section-consent">
+        <h1>Consentimiento Informado</h1>
+        <div class="consent-box">
+            <p><strong>Título del Proyecto:</strong> Estudio sobre procesos de discriminación condicional (Igualación a la muestra).</p>
+            <p><strong>Investigador(a):</strong> Jorge Hernandez, Itzel Tamayo, Lilian Martin del campo, Amairani Muñoz, Samuel Salazar</p>
+            <p><strong>Institución:</strong> Universidad Insurgentes Plantel Sur II</p>
+            
+            <span class="info-label">1. Propósito del Estudio</span>
+            <p>El objetivo de esta actividad es recolectar datos con fines estrictamente académicos para analizar los procesos de respuesta ante tareas de igualación a la muestra. Se busca observar cómo se establecen relaciones entre diferentes estímulos.</p>
+            
+            <span class="info-label">2. Procedimiento</span>
+            <p>Si decide participar, se le pedirá que realice una tarea en una computadora/dispositivo móvil. Se le presentará un estímulo "muestra" y varios estímulos de "comparación". Su tarea consistirá en seleccionar el estímulo que corresponde a la muestra según los criterios de la prueba. La duración estimada es de 10-20 minutos.</p>
+            
+            <span class="info-label">3. Confidencialidad y Manejo de Datos</span>
+            <p>Toda la información recolectada será estrictamente confidencial. Los datos serán anónimos. Los resultados se utilizarán únicamente para la elaboración de un trabajo académico y no serán compartidos con terceros ajenos al proceso de evaluación docente.</p>
+            
+            <span class="info-label">4. Riesgos y Beneficios</span>
+            <p>No existen riesgos físicos ni psicológicos previstos por participar en esta tarea. Usted no recibirá una compensación económica, pero su participación contribubre al avance del aprendizaje académico en la carrera de psicologia.</p>
+            
+            <span class="info-label">5. Voluntariedad</span>
+            <p>Su participación es totalmente voluntaria. Usted tiene el derecho de retirarse del estudio en cualquier momento, sin tener que dar explicaciones y sin que esto le acarree ninguna consecuencia negativa.</p>
+            
+            <hr>
+            <p><strong>Declaración de Consentimiento:</strong> He leído y comprendido la información anterior. Se me han aclarado mis dudas y acepto participar voluntariamente en este estudio.</p>
+            <p>Aceptación: [x] Sí, acepto participar.</p>
+            <p><strong>Fecha:</strong> 17/12/2025</p>
+        </div>
+        <button class="main-btn" onclick="showDataForm()">Siguiente</button>
+    </div>
+
+    <div id="section-data" class="hidden">
+        <h1>Datos del Participante</h1>
+        <div class="form-group">
+            <label for="edad">Seleccione su Edad:</label>
+            <select id="p-edad"></select>
+        </div>
+        <div class="form-group">
+            <label for="sexo">Sexo Biológico:</label>
+            <select id="p-sexo">
+                <option value="Hombre">Hombre</option>
+                <option value="Mujer">Mujer</option>
+            </select>
+        </div>
+        <button class="main-btn" onclick="showInstructions()">Confirmar y Continuar</button>
+    </div>
+
+    <div id="section-instructions" class="hidden">
+        <h1>Instrucciones</h1>
+        <p>1. Toque el estímulo del centro.<br>2. Elija la opción de abajo que corresponda.</p>
+        <button class="main-btn" style="background:#007bff" onclick="initPhase()">Comenzar</button>
+    </div>
+
+    <div id="experiment-area" class="hidden">
+        <h2 id="phase-display">Fase 1</h2>
+        <div id="sample-area">
+            <div class="stimulus-sample" id="sample" onclick="showDeltas()">?</div>
+        </div>
+        <div id="deltas-area" class="hidden">
+            <div class="options-container" id="options"></div>
+        </div>
+        <div id="feedback"></div>
+    </div>
+
+    <div id="section-final" class="hidden">
+        <h1>¡Completado!</h1>
+        <p>Gracias por participar.</p>
+        <div id="admin-panel" class="hidden">
+            <button class="main-btn" style="background:#17a2b8" onclick="downloadExcel()">Descargar Excel de Investigador</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Generar edades 18-99
+    const edadSelect = document.getElementById('p-edad');
+    for(let i=18; i<=99; i++) {
+        let opt = document.createElement('option');
+        opt.value = i; opt.innerHTML = i;
+        edadSelect.appendChild(opt);
+    }
+
+    const stim = {
+        correct: { A: "A1", B: "B1", C: "C1" },
+        distractors: { A: ["A2", "A3"], B: ["B2", "B3"], C: ["C2", "C3"] }
+    };
+
+    const phases = [
+        { id: 0, num: "1", name: "A-B", type: "train", rel: "AB", minTrials: 18 },
+        { id: 1, num: "2", name: "B-C", type: "train", rel: "BC", minTrials: 18 },
+        { id: 2, num: "3", name: "Mixta", type: "train", rel: "MIX", minTrials: 36 },
+        { id: 3, num: "4", name: "BA", type: "test", rel: "BA", trials: 12 },
+        { id: 4, num: "5", name: "CB", type: "test", rel: "CB", trials: 12 },
+        { id: 5, num: "6", name: "AC", type: "test", rel: "AC", trials: 12 },
+        { id: 6, num: "7", name: "CA", type: "test", rel: "CA", trials: 12 }
+    ];
+
+    let currentPhaseIdx = 0;
+    let currentTrial = 0;
+    let trialsList = [];
+    let recentHits = [];
+    let summary = { edad: "", sexo: "", f1_n: 0, f2_n: 0, f3_n: 0, s1_p: 0, s1_c: "No", s2_p: 0, s2_c: "No", e1_p: 0, e1_c: "No", e2_p: 0, e2_c: "No" };
+
+    function showDataForm() {
+        document.getElementById('section-consent').classList.add('hidden');
+        document.getElementById('section-data').classList.remove('hidden');
+    }
+
+    function showInstructions() {
+        summary.edad = document.getElementById('p-edad').value;
+        summary.sexo = document.getElementById('p-sexo').value;
+        document.getElementById('section-data').classList.add('hidden');
+        document.getElementById('section-instructions').classList.remove('hidden');
+    }
+
+    function initPhase() {
+        document.getElementById('section-instructions').classList.add('hidden');
+        document.getElementById('experiment-area').classList.remove('hidden');
+        const phase = phases[currentPhaseIdx];
+        document.getElementById('phase-display').innerText = "Fase " + phase.num;
+        currentTrial = 0;
+        recentHits = [];
+        generateTrial();
+        showTrial();
+    }
+
+    function generateTrial() {
+        const phase = phases[currentPhaseIdx];
+        let rel = phase.rel;
+        if (rel === "MIX") rel = Math.random() > 0.5 ? "AB" : "BC";
+        let sample, correct, options;
+        if (rel === "AB") { sample = stim.correct.A; correct = stim.correct.B; options = [stim.correct.B, ...stim.distractors.B]; }
+        else if (rel === "BC") { sample = stim.correct.B; correct = stim.correct.C; options = [stim.correct.C, ...stim.distractors.C]; }
+        else if (rel === "BA") { sample = stim.correct.B; correct = stim.correct.A; options = [stim.correct.A, ...stim.distractors.A]; }
+        else if (rel === "CB") { sample = stim.correct.C; correct = stim.correct.B; options = [stim.correct.B, ...stim.distractors.B]; }
+        else if (rel === "AC") { sample = stim.correct.A; correct = stim.correct.C; options = [stim.correct.C, ...stim.distractors.C]; }
+        else if (rel === "CA") { sample = stim.correct.C; correct = stim.correct.A; options = [stim.correct.A, ...stim.distractors.A]; }
+        trialsList = [{ sample, correct, options: options.sort(() => Math.random() - 0.5), relation: rel }];
+    }
+
+    function showTrial() {
+        const trial = trialsList[0];
+        document.getElementById('sample').innerText = trial.sample;
+        document.getElementById('sample-area').classList.remove('hidden');
+        document.getElementById('deltas-area').classList.add('hidden');
+        document.getElementById('feedback').innerText = "";
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = "";
+        trial.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = "option-btn";
+            btn.innerText = opt;
+            btn.onclick = () => checkResponse(opt, trial.correct);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function showDeltas() { document.getElementById('deltas-area').classList.remove('hidden'); }
+
+    function checkResponse(selected, correct) {
+        const phase = phases[currentPhaseIdx];
+        const isCorrect = selected === correct;
+        currentTrial++;
+        
+        if (phase.type === "train") {
+            recentHits.push(isCorrect ? 1 : 0);
+            document.getElementById('feedback').innerText = isCorrect ? "¡CORRECTO!" : "INCORRECTO";
+            document.getElementById('feedback').style.color = isCorrect ? "#28a745" : "#dc3545";
+            let hitsCount = recentHits.slice(-18).reduce((a, b) => a + b, 0);
+            if (currentTrial >= phase.minTrials && hitsCount >= 15) {
+                setTimeout(() => finishPhase(), 600);
+            } else if (currentTrial >= 54) {
+                setTimeout(() => finishPhase(), 600);
+            } else {
+                setTimeout(() => { generateTrial(); showTrial(); }, 600);
+            }
+        } else {
+            recentHits.push(isCorrect ? 1 : 0);
+            if (currentTrial >= phase.trials) {
+                finishPhase();
+            } else {
+                generateTrial(); showTrial();
+            }
+        }
+    }
+
+    function finishPhase() {
+        const phase = phases[currentPhaseIdx];
+        if (phase.id === 0) summary.f1_n = currentTrial;
+        if (phase.id === 1) summary.f2_n = currentTrial;
+        if (phase.id === 2) summary.f3_n = currentTrial;
+        
+        if (phase.type === "test") {
+            let p = Math.round((recentHits.reduce((a, b) => a + b, 0) / phase.trials) * 100);
+            let c = p >= 84 ? "Cumple" : "No Cumple";
+            if (phase.id === 3) { summary.s1_p = p; summary.s1_c = c; }
+            if (phase.id === 4) { summary.s2_p = p; summary.s2_c = c; }
+            if (phase.id === 5) { summary.e1_p = p; summary.e1_c = c; }
+            if (phase.id === 6) { summary.e2_p = p; summary.e2_c = c; }
+        }
+
+        currentPhaseIdx++;
+        if (currentPhaseIdx < phases.length) {
+            alert("Fase finalizada. Siguiente fase...");
+            initPhase();
+        } else {
+            document.getElementById('experiment-area').classList.add('hidden');
+            document.getElementById('section-final').classList.remove('hidden');
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'd') document.getElementById('admin-panel').classList.remove('hidden');
+    });
+
+    function downloadExcel() {
+        let csv = "data:text/csv;charset=utf-8,";
+        // Encabezados solicitados
+        csv += "Participante,Edad,Sexo,Ensayos para Fase A-B al 84%,Ensayos para Fase A-C al 84%,Ensayos para Fase Mixta al 84%,Simetria 1 (B-A) Aciertos (%),Criterio Simetria 1,Simetria 2 (C-A) Aciertos (%),Criterio Simetria 2,Equivalencia 1 (B-C) Aciertos (%),Criterio Equivalencia 1,Equivalencia 2 (C-B) Aciertos (%),Criterio Equivalencia 2\n";
+        
+        // Fila de datos (Participante se deja vacío o como "Sujeto")
+        csv += `Sujeto,${summary.edad},${summary.sexo},${summary.f1_n},${summary.f2_n},${summary.f3_n},${summary.s1_p},${summary.s1_c},${summary.s2_p},${summary.s2_c},${summary.e1_p},${summary.e1_c},${summary.e2_p},${summary.e2_c}\n`;
+        
+        const encodedUri = encodeURI(csv);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "Resultados_Sujeto.csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>
+</body>
+</html>
